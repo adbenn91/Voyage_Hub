@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VoyageHub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3182ce;
+      --bg-light: #ebf8ff;
+      --bg-dark: #1a202c;
+      --card-bg: #fff;
+      --text: #333;
+      --text-dark: #f7fafc;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, var(--bg-light), #fff5f7);
+      color: var(--text);
+      padding: 20px;
+      margin: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark-mode {
+      background: linear-gradient(to bottom right, #232946, #121629);
+      color: var(--text-dark);
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+      animation: fadeIn 1.2s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-30px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2em;
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(49,130,206,0.15);
+      letter-spacing: -2px;
+      user-select: none;
+    }
+    h1, h2 {
+      text-align: center;
+      margin: 0.5em 0;
+    }
+    .card {
+      border-radius: 12px;
+      background: var(--card-bg);
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark-mode .card {
+      background: #232946;
+      color: var(--text-dark);
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 1em;
+      transition: border 0.2s;
+    }
+    input[type="text"]:focus {
+      border: 1.5px solid var(--primary);
+      outline: none;
+    }
+    button {
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1em;
+      font-weight: 600;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 4px rgba(49,130,206,0.08);
+    }
+    button:focus {
+      outline: 2px solid #2b6cb0;
+    }
+    .toggle-dark {
+      background: none;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      width: auto;
+      margin: 0 auto 16px auto;
+      display: block;
+      transition: background 0.2s, color 0.2s;
+    }
+    .toggle-dark.active, body.dark-mode .toggle-dark {
+      background: var(--primary);
+      color: #fff;
+    }
+    .destinations {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+    }
+    .destination-card {
+      cursor: pointer;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.09);
+      background: white;
+      transition: transform 0.18s, box-shadow 0.18s, background 0.3s;
+      border: 2px solid transparent;
+    }
+    .destination-card:hover, .destination-card:focus {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 6px 18px rgba(49,130,206,0.13);
+      border: 2px solid var(--primary);
+      background: #f0f8ff;
+    }
+    body.dark-mode .destination-card {
+      background: #232946;
+      color: var(--text-dark);
+    }
+    .destination-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+    .destination-card .info {
+      padding: 14px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      border: 3px solid #c3dafe;
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg);}
+    }
+    footer {
+      text-align: center;
+      padding-top: 24px;
+      font-size: 0.95em;
+      color: #777;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 0; }
+      .card { padding: 14px; }
+      .destinations { grid-template-columns: 1fr; }
+      .logo { width: 44px; height: 44px; font-size: 1.3em;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo" aria-label="VoyageHub logo">VH</div>
+      <h1>VoyageHub</h1>
+      <p style="text-align:center; max-width:600px;">
+        Discover your dream destination with the power of AI.<br>
+        <span style="color:var(--primary);font-weight:600;">Fast, personalized, unforgettable.</span>
+      </p>
+      <button class="toggle-dark" id="toggleDark" aria-pressed="false" aria-label="Toggle dark mode">🌙 Dark Mode</button>
+    </header>
+
+    <div class="card">
+      <h2>AI Travel Assistant</h2>
+      <label for="chatInput">Describe your ideal trip:</label>
+      <input type="text" id="chatInput" placeholder="e.g. I want beaches and adventure in July" aria-label="Travel idea input" />
+      <button onclick="generateResponse()" id="aiBtn">Get AI Suggestion</button>
+      <p id="responseText" style="margin-top:15px; min-height:32px;"></p>
+    </div>
+
+    <div class="card">
+      <h2>Your Travel Plan</h2>
+      <p><strong>Day 1: Arrival & City Tour</strong><br>Land at destination, check into hotel, enjoy a guided city walk and local dinner.</p>
+      <p><strong>Day 2: Adventure Day</strong><br>Mountain hike in the morning, followed by kayaking and street food tour in the evening.</p>
+      <p><strong>Day 3: Culture & Relax</strong><br>Visit museums, relax at a spa, and enjoy a sunset cruise.</p>
+    </div>
+
+    <div class="card">
+      <h2>Explore Popular Destinations</h2>
+      <div class="destinations">
+        <div class="destination-card" tabindex="0" onclick="suggestCity('Tokyo')" onkeypress="if(event.key==='Enter'){suggestCity('Tokyo')}">
+          <img src="https://source.unsplash.com/400x300/?Tokyo,travel" alt="Tokyo city view">
+          <div class="info">
+            <strong>Tokyo</strong>
+            <p>Click to discover what Tokyo has to offer.</p>
+          </div>
+        </div>
+        <div class="destination-card" tabindex="0" onclick="suggestCity('Madrid')" onkeypress="if(event.key==='Enter'){suggestCity('Madrid')}">
+          <img src="https://source.unsplash.com/400x300/?Madrid,travel" alt="Madrid city view">
+          <div class="info">
+            <strong>Madrid</strong>
+            <p>Click to discover what Madrid has to offer.</p>
+          </div>
+        </div>
+        <div class="destination-card" tabindex="0" onclick="suggestCity('London')" onkeypress="if(event.key==='Enter'){suggestCity('London')}">
+          <img src="https://source.unsplash.com/400x300/?London,travel" alt="London city view">
+          <div class="info">
+            <strong>London</strong>
+            <p>Click to discover what London has to offer.</p>
+          </div>
+        </div>
+        <div class="destination-card" tabindex="0" onclick="suggestCity('Bali')" onkeypress="if(event.key==='Enter'){suggestCity('Bali')}">
+          <img src="https://source.unsplash.com/400x300/?Bali,travel" alt="Bali beach">
+          <div class="info">
+            <strong>Bali</strong>
+            <p>Click to discover what Bali has to offer.</p>
+          </div>
+        </div>
+        <div class="destination-card" tabindex="0" onclick="suggestCity('New York')" onkeypress="if(event.key==='Enter'){suggestCity('New York')}">
+          <img src="https://source.unsplash.com/400x300/?NewYork,travel" alt="New York city">
+          <div class="info">
+            <strong>New York</strong>
+            <p>Click to discover what New York has to offer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>What Travelers Say</h2>
+      <p>“VoyageHub helped me plan a 2-week Europe trip under budget. It felt like I had a real travel agent in my pocket!”<br><strong>— Amina, Algeria</strong></p>
+      <p>“The AI feature blew me away. I just typed in ‘I want nature and temples’ and boom—Bali!”<br><strong>— James, USA</strong></p>
+      <p>“I loved the dark mode for late-night planning. Super easy to use!”<br><strong>— Sara, UK</strong></p>
+    </div>
+
+    <div class="card" style="text-align:center;">
+      <h2>Need Help Planning?</h2>
+      <p>Reach out and let our AI assistants build your dream trip.</p>
+      <a href="mailto:travelitaai@gmail.com">
+        <button>Contact Us</button>
+      </a>
+    </div>
+
+    <footer>
+      © <span id="year"></span> VoyageHub. All rights reserved.
+    </footer>
+  </div>
+
+  <script>
+    // Dynamic AI responses for demo
+    const aiResponses = [
+      input => `Explore Bali for temples and nature retreats!`,
+      input => `How about Santorini for stunning beaches and sunsets?`,
+      input => `Tokyo offers adventure, culture, and amazing food.`,
+      input => `Try Costa Rica for adventure and tropical vibes.`,
+      input => `Madrid is perfect for art, food, and lively summer nights.`,
+      input => `London: history, parks, and world-class museums await!`,
+      input => `Bali is ideal for relaxation, yoga, and beautiful beaches.`,
+      input => `New York: endless excitement, shows, and city lights.`,
+      input => `Consider Iceland for breathtaking landscapes and adventure.`,
+      input => `Kyoto for temples, gardens, and cherry blossoms.`
+    ];
+
+    function getRandomResponse(input) {
+      // Pick a random response, but mention the city if possible
+      const cityMatch = /(tokyo|madrid|london|bali|new york|iceland|kyoto)/i.exec(input);
+      if (cityMatch) {
+        const city = cityMatch[1].charAt(0).toUpperCase() + cityMatch[1].slice(1);
+        return `Discover ${city}: ${city === 'Bali' ? 'temples, beaches, and nature' : city === 'Tokyo' ? 'adventure, culture, and food' : city === 'Madrid' ? 'art, food, and lively nights' : city === 'London' ? 'history, parks, and museums' : city === 'New york' ? 'shows, city lights, and excitement' : city === 'Iceland' ? 'breathtaking landscapes and adventure' : city === 'Kyoto' ? 'temples, gardens, and cherry blossoms' : 'a wonderful destination'}!`;
+      }
+      return aiResponses[Math.floor(Math.random() * aiResponses.length)](input);
+    }
+
+    function getAISuggestion(input) {
+  // Simple keyword-based matching for demo purposes
+  const ideas = [
+    {
+      keywords: /history.*mountain|mountain.*history|mountains.*history|history.*mountains/i,
+      destination: "Cusco & Machu Picchu, Peru",
+      bestMonths: "May–September",
+      hotel: "Tierra Viva Cusco Saphi",
+      budget: "$1200–$1800 (3 days, mid-range)",
+      tips: [
+        "Book Machu Picchu tickets in advance.",
+        "Acclimatize to altitude in Cusco before hiking.",
+        "Try local Peruvian cuisine."
+      ],
+      itinerary: [
+        "Day 1: Arrive in Cusco, city walking tour, visit Qorikancha & Plaza de Armas.",
+        "Day 2: Sacred Valley tour (Pisac, Ollantaytambo), train to Aguas Calientes.",
+        "Day 3: Early morning Machu Picchu guided tour, return to Cusco."
+      ]
+    },
+    {
+      keywords: /beach.*adventure|adventure.*beach|beaches.*adventure/i,
+      destination: "Bali, Indonesia",
+      bestMonths: "May–September",
+      hotel: "The Udaya Resorts & Spa",
+      budget: "$900–$1500 (3 days, mid-range)",
+      tips: [
+        "Rent a scooter for flexibility.",
+        "Respect local customs at temples.",
+        "Pack reef-safe sunscreen."
+      ],
+      itinerary: [
+        "Day 1: Arrive in Ubud, explore Monkey Forest & rice terraces.",
+        "Day 2: Surfing lesson at Kuta Beach, sunset at Tanah Lot Temple.",
+        "Day 3: White-water rafting on Ayung River, relax at a spa."
+      ]
+    },
+    {
+      keywords: /city.*food|food.*city|culinary.*city|city.*culinary/i,
+      destination: "Tokyo, Japan",
+      bestMonths: "March–May, October–November",
+      hotel: "Shinjuku Granbell Hotel",
+      budget: "$1300–$2000 (3 days, mid-range)",
+      tips: [
+        "Get a prepaid Suica card for transport.",
+        "Try sushi at Tsukiji Outer Market.",
+        "Book popular restaurants in advance."
+      ],
+      itinerary: [
+        "Day 1: Explore Asakusa & Senso-ji, street food at Nakamise-dori.",
+        "Day 2: Tsukiji Market breakfast, Shibuya & Harajuku food tour.",
+        "Day 3: Day trip to Yokohama Ramen Museum, evening izakaya hopping."
+      ]
+    }
+    // Add more patterns as needed
+  ];
+
+  // Try to match user input
+  for (const idea of ideas) {
+    if (idea.keywords.test(input)) {
+      return `
+        <strong>Destination:</strong> ${idea.destination}<br>
+        <strong>Best Months:</strong> ${idea.bestMonths}<br>
+        <strong>Recommended Hotel:</strong> ${idea.hotel}<br>
+        <strong>Budget:</strong> ${idea.budget}<br>
+        <strong>Travel Tips:</strong>
+        <ul>${idea.tips.map(tip => `<li>${tip}</li>`).join('')}</ul>
+        <strong>Sample 3-Day Itinerary:</strong>
+        <ol>${idea.itinerary.map(day => `<li>${day}</li>`).join('')}</ol>
+      `;
+    }
+  }
+
+  // Fallback generic suggestion
+  return `
+    <strong>Destination:</strong> Santorini, Greece<br>
+    <strong>Best Months:</strong> May–October<br>
+    <strong>Recommended Hotel:</strong> Canaves Oia Hotel<br>
+    <strong>Budget:</strong> $1500–$2200 (3 days, mid-range)<br>
+    <strong>Travel Tips:</strong>
+    <ul>
+      <li>Book ferries and hotels early in summer.</li>
+      <li>Try local wines and seafood.</li>
+      <li>Pack light, breathable clothing.</li>
+    </ul>
+    <strong>Sample 3-Day Itinerary:</strong>
+    <ol>
+      <li>Day 1: Explore Oia, sunset at Amoudi Bay.</li>
+      <li>Day 2: Beach day at Perissa, visit Akrotiri ruins.</li>
+      <li>Day 3: Catamaran cruise, wine tasting tour.</li>
+    </ol>
+  `;
+}
+
+    function generateResponse() {
+      const input = document.getElementById("chatInput").value;
+      const responseText = document.getElementById("responseText");
+      const aiBtn = document.getElementById("aiBtn");
+      if (!input.trim()) {
+        responseText.textContent = "Please enter a travel idea.";
+        return;
+      }
+      aiBtn.disabled = true;
+      responseText.innerHTML = `<span class="spinner"></span>Thinking...`;
+      setTimeout(() => {
+        responseText.innerHTML = getAISuggestion(input);
+        aiBtn.disabled = false;
+      }, 1200);
+    }
+
+    function suggestCity(city) {
+      document.getElementById("chatInput").value = `Tell me about visiting ${city}`;
+      generateResponse();
+      document.getElementById("chatInput").focus();
+    }
+
+    // Dark mode toggle
+    const toggleDark = document.getElementById('toggleDark');
+    toggleDark.addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+      this.classList.toggle('active');
+      this.setAttribute('aria-pressed', document.body.classList.contains('dark-mode'));
+      this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
+    });
+
+    // Set year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Accessibility: allow Enter key on AI button
+    document.getElementById("chatInput").addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        generateResponse();
+      }
+    });
+  </script>
+</body>
+</html>
